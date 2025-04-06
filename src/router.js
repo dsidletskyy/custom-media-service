@@ -1,4 +1,15 @@
+/**
+ * Router class for handling HTTP requests
+ * Maps URLs and HTTP methods to controller methods
+ * 
+ * @class Router
+ */
 class Router {
+    /**
+     * Creates a new Router instance
+     * 
+     * @param {Object} mediaController - Controller for handling media operations
+     */
     constructor(mediaController) {
         this.mediaController = mediaController;
         this.routes = {
@@ -15,6 +26,15 @@ class Router {
         };
     }
 
+    /**
+     * Handles an incoming HTTP request
+     * Routes the request to the appropriate controller method based on path and HTTP method
+     * 
+     * @param {Object} req - HTTP request object
+     * @param {Object} res - HTTP response object
+     * @param {string} path - Request path
+     * @returns {Promise<void>}
+     */
     async handle(req, res, path) {
         const route = this.routes[path];
         

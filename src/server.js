@@ -1,3 +1,10 @@
+/**
+ * Main server file for the custom media service
+ * Sets up HTTP server, services, controllers, and routing
+ * 
+ * @module server
+ */
+
 const http = require('http');
 const { URL } = require('url');
 const path = require('path');
@@ -28,6 +35,10 @@ const router = new Router(mediaController);
 
 const PORT = process.env.PORT || 3000;
 
+/**
+ * Creates and configures the HTTP server
+ * Handles incoming requests, CORS, and routing
+ */
 const server = http.createServer(async (req, res) => {
     const parsedUrl = new URL(req.url, `http://${req.headers.host}`);
     const urlPath = parsedUrl.pathname;
@@ -84,6 +95,10 @@ server.on('error', (error) => {
     LoggerService.error('Server error occurred', error);
 });
 
+/**
+ * Starts the server on the specified port
+ * Logs server startup information
+ */
 server.listen(PORT, () => {
     LoggerService.info('Server started', {
         port: PORT,

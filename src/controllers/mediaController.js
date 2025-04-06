@@ -1,11 +1,32 @@
 const LoggerService = require('../services/loggerService');
 
+/**
+ * Controller class for handling media-related operations
+ * Manages file uploads, retrievals, updates, and deletions through S3 and upload services
+ * 
+ * @class MediaController
+ */
 class MediaController {
+    /**
+     * Creates a new MediaController instance
+     * 
+     * @param {Object} s3Service - Service for interacting with AWS S3
+     * @param {Object} uploadService - Service for handling file uploads
+     */
     constructor(s3Service, uploadService) {
         this.s3Service = s3Service;
         this.uploadService = uploadService;
     }
 
+    /**
+     * Handles file upload requests
+     * Processes the uploaded file, stores it in S3, and returns a success response
+     * 
+     * @param {Object} req - HTTP request object
+     * @param {Object} res - HTTP response object
+     * @returns {Promise<void>}
+     * @throws {Error} If no file is uploaded or upload process fails
+     */
     handleUpload = async (req, res) => {
         try {
             const file = await this.uploadService.handleUpload(req);
@@ -26,7 +47,7 @@ class MediaController {
             res.writeHead(200, { 'Content-Type': 'application/json' });
             res.end(JSON.stringify({ 
                 message: 'File uploaded successfully',
-                filename: file.originalname
+                filename: key.split('/').pop()
             }));
         } catch (error) {
             LoggerService.error('Upload failed', error);
@@ -38,6 +59,17 @@ class MediaController {
         }
     }
 
+    /**
+     * Handles file retrieval requests
+     * Generates a signed URL for accessing a file from S3
+     * 
+     * @param {Object} req - HTTP request object
+     * @param {string} req.url - Request URL containing query parameters
+     * @param {Object} req.headers - Request headers
+     * @param {Object} res - HTTP response object
+     * @returns {Promise<void>}
+     * @throws {Error} If filename is not provided or retrieval fails
+     */
     handleGet = async (req, res) => {
         try {
             const url = new URL(req.url, `http://${req.headers.host}`);
@@ -63,6 +95,17 @@ class MediaController {
         }
     }
 
+    /**
+     * Handles file update requests
+     * Deletes the old file and uploads a new one with the same name
+     * 
+     * @param {Object} req - HTTP request object
+     * @param {string} req.url - Request URL containing query parameters
+     * @param {Object} req.headers - Request headers
+     * @param {Object} res - HTTP response object
+     * @returns {Promise<void>}
+     * @throws {Error} If old filename is not provided or update process fails
+     */
     handleUpdate = async (req, res) => {
         try {
             const url = new URL(req.url, `http://${req.headers.host}`);
@@ -102,6 +145,17 @@ class MediaController {
         }
     }
 
+    /**
+     * Handles file deletion requests
+     * Removes the specified file from S3
+     * 
+     * @param {Object} req - HTTP request object
+     * @param {string} req.url - Request URL containing query parameters
+     * @param {Object} req.headers - Request headers
+     * @param {Object} res - HTTP response object
+     * @returns {Promise<void>}
+     * @throws {Error} If filename is not provided or deletion fails
+     */
     handleDelete = async (req, res) => {
         try {
             const url = new URL(req.url, `http://${req.headers.host}`);
