@@ -1,36 +1,39 @@
-const { handleUpload, handleGet, handleUpdate, handleDelete } = require('./s3Service');
-
-const routes = {
-    '/api/media': {
-        POST: handleUpload,
-        GET: handleGet
-    },
-    '/api/media/update': {
-        PUT: handleUpdate
-    },
-    '/api/media/delete': {
-        DELETE: handleDelete
-    }
-};
-
-function router(req, res, path) {
-    const route = routes[path];
-    
-    if (!route) {
-        res.writeHead(404, { 'Content-Type': 'application/json' });
-        res.end(JSON.stringify({ error: 'Not Found' }));
-        return;
+class Router {
+    constructor(mediaController) {
+        this.mediaController = mediaController;
+        this.routes = {
+            '/api/media': {
+                POST: this.mediaController.handleUpload,
+                GET: this.mediaController.handleGet
+            },
+            '/api/media/update': {
+                PUT: this.mediaController.handleUpdate
+            },
+            '/api/media/delete': {
+                DELETE: this.mediaController.handleDelete
+            }
+        };
     }
 
-    const handler = route[req.method];
-    
-    if (!handler) {
-        res.writeHead(405, { 'Content-Type': 'application/json' });
-        res.end(JSON.stringify({ error: 'Method Not Allowed' }));
-        return;
-    }
+    async handle(req, res, path) {
+        const route = this.routes[path];
+        
+        if (!route) {
+            res.writeHead(404, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ error: 'Not Found' }));
+            return;
+        }
 
-    handler(req, res);
+        const handler = route[req.method];
+        
+        if (!handler) {
+            res.writeHead(405, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ error: 'Method Not Allowed' }));
+            return;
+        }
+
+        await handler(req, res);
+    }
 }
 
-module.exports = { router }; 
+module.exports = Router; 

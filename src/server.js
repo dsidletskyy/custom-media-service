@@ -1,13 +1,33 @@
 const http = require('http');
 const { URL } = require('url');
-const { router } = require('./router');
-const fs = require('fs');
 const path = require('path');
+const fs = require('fs');
 require('dotenv').config();
+
+const S3Service = require('./services/s3Service');
+const UploadService = require('./services/uploadService');
+const MediaController = require('./controllers/mediaController');
+const Router = require('./router');
+
+// Initialize services
+const s3Service = new S3Service({
+    region: process.env.AWS_REGION,
+    accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+    bucketName: process.env.AWS_BUCKET_NAME
+});
+
+const uploadService = new UploadService();
+
+// Initialize controller
+const mediaController = new MediaController(s3Service, uploadService);
+
+// Initialize router
+const router = new Router(mediaController);
 
 const PORT = process.env.PORT || 3000;
 
-const server = http.createServer((req, res) => {
+const server = http.createServer(async (req, res) => {
     const parsedUrl = new URL(req.url, `http://${req.headers.host}`);
     const urlPath = parsedUrl.pathname;
     
@@ -43,7 +63,7 @@ const server = http.createServer((req, res) => {
 
     // Route API requests
     if (urlPath.startsWith('/api')) {
-        router(req, res, urlPath);
+        await router.handle(req, res, urlPath);
         return;
     }
 
