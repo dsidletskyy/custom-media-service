@@ -1,0 +1,21 @@
+{
+    "maxFileSize": 33554432,
+    "maxFileSizeMB": 33,
+    "maxFiles": 1,
+    "allowedTypes": {
+        "images": {
+            "image/jpeg": ".jpg",
+            "image/png": ".png",
+            "image/gif": ".gif"
+        },
+        "documents": {
+            "application/pdf": ".pdf",
+            "application/msword": ".doc",
+            "application/vnd.openxmlformats-officedocument.wordprocessingml.document": ".docx"
+        },
+        "media": {
+            "video/mp4": ".mp4",
+            "audio/mpeg": ".mp3"
+        }
+    }
+} 
