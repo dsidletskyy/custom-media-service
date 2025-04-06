@@ -8,6 +8,7 @@ const S3Service = require('./services/s3Service');
 const UploadService = require('./services/uploadService');
 const MediaController = require('./controllers/mediaController');
 const Router = require('./router');
+const LoggerService = require('./services/loggerService');
 
 // Initialize services
 const s3Service = new S3Service({
@@ -44,17 +45,22 @@ const server = http.createServer(async (req, res) => {
     }
 
     // Log incoming requests
-    console.log(`${new Date().toISOString()} - ${req.method} ${urlPath}`);
+    LoggerService.debug('Incoming request', {
+        method: req.method,
+        path: urlPath,
+    });
 
     // Serve static files from public directory
     if (urlPath === '/' || urlPath === '/index.html') {
         const filePath = path.join(__dirname, '../public/index.html');
         fs.readFile(filePath, (err, content) => {
             if (err) {
+                LoggerService.error('Error loading index.html', err);
                 res.writeHead(500);
                 res.end('Error loading index.html');
                 return;
             }
+            LoggerService.debug('Serving index.html');
             res.writeHead(200, { 'Content-Type': 'text/html' });
             res.end(content);
         });
@@ -68,10 +74,20 @@ const server = http.createServer(async (req, res) => {
     }
 
     // Handle 404 for other routes
+    LoggerService.debug('Route not found', { path: urlPath });
     res.writeHead(404, { 'Content-Type': 'application/json' });
     res.end(JSON.stringify({ error: 'Not Found' }));
 });
 
+// Error handling for server
+server.on('error', (error) => {
+    LoggerService.error('Server error occurred', error);
+});
+
 server.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
+    LoggerService.info('Server started', {
+        port: PORT,
+        env: process.env.NODE_ENV || 'development',
+        timestamp: new Date().toISOString()
+    });
 }); 

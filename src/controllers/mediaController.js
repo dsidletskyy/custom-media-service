@@ -1,3 +1,5 @@
+const LoggerService = require('../services/loggerService');
+
 class MediaController {
     constructor(s3Service, uploadService) {
         this.s3Service = s3Service;
@@ -11,7 +13,7 @@ class MediaController {
                 throw new Error('No file uploaded');
             }
 
-            console.log('File received:', {
+            LoggerService.info('File received', {
                 filename: file.originalname,
                 mimetype: file.mimetype,
                 size: file.size
@@ -19,6 +21,7 @@ class MediaController {
 
             const key = `uploads/${Date.now()}-${file.originalname}`;
             await this.s3Service.uploadFile(key, file.buffer, file.mimetype);
+            LoggerService.info('File uploaded successfully', { key });
 
             res.writeHead(200, { 'Content-Type': 'application/json' });
             res.end(JSON.stringify({ 
@@ -26,7 +29,7 @@ class MediaController {
                 filename: file.originalname
             }));
         } catch (error) {
-            console.error('Upload error:', error);
+            LoggerService.error('Upload failed', error);
             res.writeHead(500, { 'Content-Type': 'application/json' });
             res.end(JSON.stringify({ 
                 error: 'Upload failed',
@@ -41,6 +44,7 @@ class MediaController {
             const filename = url.searchParams.get('filename');
 
             if (!filename) {
+                LoggerService.error('Filename not provided');
                 res.writeHead(400, { 'Content-Type': 'application/json' });
                 res.end(JSON.stringify({ error: 'Filename is required' }));
                 return;
@@ -48,11 +52,12 @@ class MediaController {
 
             const key = `uploads/${filename}`;
             const signedUrl = await this.s3Service.getSignedUrl(key);
+            LoggerService.info('Generated signed URL', { key });
 
             res.writeHead(200, { 'Content-Type': 'application/json' });
             res.end(JSON.stringify({ url: signedUrl }));
         } catch (error) {
-            console.error('Get error:', error);
+            LoggerService.error('Failed to get file', error);
             res.writeHead(500, { 'Content-Type': 'application/json' });
             res.end(JSON.stringify({ error: 'Failed to get file' }));
         }
@@ -64,6 +69,7 @@ class MediaController {
             const oldFilename = url.searchParams.get('filename');
 
             if (!oldFilename) {
+                LoggerService.error('Old filename not provided');
                 res.writeHead(400, { 'Content-Type': 'application/json' });
                 res.end(JSON.stringify({ error: 'Old filename is required' }));
                 return;
@@ -77,10 +83,12 @@ class MediaController {
             // Delete old file
             const oldKey = `uploads/${oldFilename}`;
             await this.s3Service.deleteFile(oldKey);
+            LoggerService.info('Old file deleted', { key: oldKey });
 
             // Upload new file
             const newKey = `uploads/${Date.now()}-${file.originalname}`;
             await this.s3Service.uploadFile(newKey, file.buffer, file.mimetype);
+            LoggerService.info('New file uploaded', { key: newKey });
 
             res.writeHead(200, { 'Content-Type': 'application/json' });
             res.end(JSON.stringify({ 
@@ -88,7 +96,7 @@ class MediaController {
                 filename: file.originalname
             }));
         } catch (error) {
-            console.error('Update error:', error);
+            LoggerService.error('Update failed', error);
             res.writeHead(500, { 'Content-Type': 'application/json' });
             res.end(JSON.stringify({ error: 'Update failed' }));
         }
@@ -100,6 +108,7 @@ class MediaController {
             const filename = url.searchParams.get('filename');
 
             if (!filename) {
+                LoggerService.error('Filename not provided');
                 res.writeHead(400, { 'Content-Type': 'application/json' });
                 res.end(JSON.stringify({ error: 'Filename is required' }));
                 return;
@@ -107,11 +116,12 @@ class MediaController {
 
             const key = `uploads/${filename}`;
             await this.s3Service.deleteFile(key);
+            LoggerService.info('File deleted', { key });
 
             res.writeHead(200, { 'Content-Type': 'application/json' });
             res.end(JSON.stringify({ message: 'File deleted successfully' }));
         } catch (error) {
-            console.error('Delete error:', error);
+            LoggerService.error('Delete failed', error);
             res.writeHead(500, { 'Content-Type': 'application/json' });
             res.end(JSON.stringify({ error: 'Delete failed' }));
         }
