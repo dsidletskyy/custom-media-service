@@ -1,14 +1,16 @@
 const LoggerService = require('../services/loggerService');
 
 /**
- * Controller class for handling media-related operations
- * Manages file uploads, retrievals, updates, and deletions through S3 and upload services
+ * Controller class for handling media-related operations.
+ * Manages file uploads, retrievals, updates, and deletions through S3 and upload services.
+ * Provides a unified interface for all media operations.
  * 
  * @class MediaController
  */
 class MediaController {
     /**
-     * Creates a new MediaController instance
+     * Creates a new MediaController instance.
+     * Initializes S3 and upload service dependencies.
      * 
      * @param {Object} s3Service - Service for interacting with AWS S3
      * @param {Object} uploadService - Service for handling file uploads
@@ -19,9 +21,11 @@ class MediaController {
     }
 
     /**
-     * Handles file upload requests
-     * Processes the uploaded file, stores it in S3, and returns a success response
+     * Handles file upload requests.
+     * Processes the uploaded file, stores it in S3, and returns a success response.
+     * Includes error handling and logging for the upload process.
      * 
+     * @method
      * @param {Object} req - HTTP request object
      * @param {Object} res - HTTP response object
      * @returns {Promise<void>}
@@ -60,9 +64,11 @@ class MediaController {
     }
 
     /**
-     * Handles file retrieval requests
-     * Generates a signed URL for accessing a file from S3
+     * Handles file retrieval requests.
+     * Generates a signed URL for accessing a file from S3.
+     * Validates filename parameter and handles errors.
      * 
+     * @method
      * @param {Object} req - HTTP request object
      * @param {string} req.url - Request URL containing query parameters
      * @param {Object} req.headers - Request headers
@@ -96,9 +102,11 @@ class MediaController {
     }
 
     /**
-     * Handles file update requests
-     * Deletes the old file and uploads a new one with the same name
+     * Handles file update requests.
+     * Deletes the old file and uploads a new one with the same name.
+     * Manages the entire update process including error handling.
      * 
+     * @method
      * @param {Object} req - HTTP request object
      * @param {string} req.url - Request URL containing query parameters
      * @param {Object} req.headers - Request headers
@@ -146,9 +154,11 @@ class MediaController {
     }
 
     /**
-     * Handles file deletion requests
-     * Removes the specified file from S3
+     * Handles file deletion requests.
+     * Removes the specified file from S3.
+     * Validates input and provides appropriate error responses.
      * 
+     * @method
      * @param {Object} req - HTTP request object
      * @param {string} req.url - Request URL containing query parameters
      * @param {Object} req.headers - Request headers

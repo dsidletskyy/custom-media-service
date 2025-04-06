@@ -1,12 +1,14 @@
 /**
- * Service for logging application events and errors
- * Provides structured JSON logging with timestamps and log levels
+ * Service for logging application events and errors.
+ * Provides structured JSON logging with timestamps and log levels.
+ * Supports different environments and log types.
  * 
  * @class LoggerService
  */
 class LoggerService {
     /**
-     * Gets the current timestamp in ISO format
+     * Gets the current timestamp in ISO format.
+     * Used for consistent timestamp formatting across log entries.
      * 
      * @returns {string} Current timestamp in ISO format
      */
@@ -15,7 +17,8 @@ class LoggerService {
     }
 
     /**
-     * Logs an informational message
+     * Logs an informational message.
+     * Includes optional data in structured JSON format.
      * 
      * @param {string} message - The message to log
      * @param {Object} [data=null] - Optional data to include in the log
@@ -32,7 +35,8 @@ class LoggerService {
     }
 
     /**
-     * Logs an error message with error details
+     * Logs an error message with error details.
+     * Includes stack trace and error message if provided.
      * 
      * @param {string} message - The error message to log
      * @param {Error} [error=null] - Optional error object to include in the log
@@ -54,7 +58,9 @@ class LoggerService {
     }
 
     /**
-     * Logs a debug message (only in non-production environments)
+     * Logs a debug message (only in non-production environments).
+     * Includes optional data for detailed debugging.
+     * Automatically suppressed in production environment.
      * 
      * @param {string} message - The debug message to log
      * @param {Object} [data=null] - Optional data to include in the log

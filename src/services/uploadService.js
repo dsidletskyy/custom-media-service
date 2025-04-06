@@ -2,16 +2,16 @@ const multer = require('multer');
 const uploadConfig = require('../config/upload.config.json');
 
 /**
- * Service for handling file uploads
- * Uses multer to process multipart/form-data requests
+ * Service for handling file uploads.
+ * Uses multer to process multipart/form-data requests.
  * 
  * @class UploadService
  */
 class UploadService {
     /**
-     * Creates a new UploadService instance
-     * Configures multer with memory storage and a custom file filter
-     * Uses configuration from upload.config.json for limits and allowed types
+     * Creates a new UploadService instance.
+     * Configures multer with memory storage and a custom file filter.
+     * Uses configuration from upload.config.json for limits and allowed types.
      */
     constructor() {
         this.upload = multer({
@@ -29,9 +29,10 @@ class UploadService {
     }
 
     /**
-     * Filters uploaded files based on their MIME type
-     * Allows only specific file types defined in upload.config.json
+     * Filters uploaded files based on their MIME type.
+     * Allows only specific file types defined in upload.config.json.
      * 
+     * @method
      * @param {Object} req - HTTP request object
      * @param {Object} file - File object from multer
      * @param {string} file.mimetype - MIME type of the uploaded file
@@ -47,7 +48,7 @@ class UploadService {
     }
 
     /**
-     * Gets a formatted string of allowed file extensions
+     * Gets a formatted string of allowed file extensions.
      * 
      * @returns {string} Comma-separated list of allowed file extensions
      */
@@ -58,8 +59,11 @@ class UploadService {
     }
 
     /**
-     * Processes a file upload request
+     * Processes a file upload request.
+     * Validates file type and size before processing.
+     * Handles single file uploads only.
      * 
+     * @method
      * @param {Object} req - HTTP request object
      * @returns {Promise<Object>} A promise that resolves to the uploaded file object
      * @throws {Error} If the upload fails, file is too large, or invalid file is provided

@@ -2,14 +2,15 @@ const { S3Client, PutObjectCommand, GetObjectCommand, DeleteObjectCommand } = re
 const { getSignedUrl } = require('@aws-sdk/s3-request-presigner');
 
 /**
- * Service for interacting with AWS S3 storage
- * Handles file uploads, retrievals, and deletions
+ * Service for interacting with AWS S3 storage.
+ * Handles file uploads, retrievals, and deletions.
  * 
  * @class S3Service
  */
 class S3Service {
     /**
-     * Creates a new S3Service instance
+     * Creates a new S3Service instance.
+     * Initializes AWS S3 client with provided credentials.
      * 
      * @param {Object} config - Configuration object for S3 client
      * @param {string} config.region - AWS region (e.g., 'us-east-1')
@@ -29,7 +30,8 @@ class S3Service {
     }
 
     /**
-     * Uploads a file to S3
+     * Uploads a file to S3.
+     * Stores the file with specified key and content type.
      * 
      * @param {string} key - The key (path) where the file will be stored in S3
      * @param {Buffer} buffer - The file content as a buffer
@@ -49,8 +51,9 @@ class S3Service {
     }
 
     /**
-     * Generates a signed URL for accessing a file from S3
-     * The URL is valid for 1 hour (3600 seconds)
+     * Generates a signed URL for accessing a file from S3.
+     * The URL is valid for 1 hour (3600 seconds).
+     * Provides secure, temporary access to private S3 objects.
      * 
      * @param {string} key - The key (path) of the file in S3
      * @returns {Promise<string>} A signed URL that can be used to access the file
@@ -66,7 +69,8 @@ class S3Service {
     }
 
     /**
-     * Deletes a file from S3
+     * Deletes a file from S3.
+     * Permanently removes the specified object from the bucket.
      * 
      * @param {string} key - The key (path) of the file to delete in S3
      * @returns {Promise<void>}

@@ -1,12 +1,14 @@
 /**
- * Router class for handling HTTP requests
- * Maps URLs and HTTP methods to controller methods
+ * Router class for handling HTTP requests.
+ * Maps URLs and HTTP methods to controller methods.
+ * Provides centralized request routing and error handling.
  * 
  * @class Router
  */
 class Router {
     /**
-     * Creates a new Router instance
+     * Creates a new Router instance.
+     * Initializes routes mapping for media operations.
      * 
      * @param {Object} mediaController - Controller for handling media operations
      */
@@ -27,8 +29,9 @@ class Router {
     }
 
     /**
-     * Handles an incoming HTTP request
-     * Routes the request to the appropriate controller method based on path and HTTP method
+     * Handles an incoming HTTP request.
+     * Routes the request to the appropriate controller method based on path and HTTP method.
+     * Provides error responses for invalid routes and methods.
      * 
      * @param {Object} req - HTTP request object
      * @param {Object} res - HTTP response object
